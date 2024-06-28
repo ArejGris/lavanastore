@@ -1,0 +1,160 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+provider = "postgresql"
+url      = "postgres://postgres.mwaixiesxtmnpowbnhdu:Lavana1234gris@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres"
+//provider="mysql"
+//url="mysql://root:1234@localhost:3306/lavana3"
+}
+model Session {
+id String @id @default(uuid())
+userId String 
+tokenDate DateTime?
+customer User @relation(fields: [userId], references: [id])
+
+}
+model Copon{
+id String @id @default(uuid())
+code String @unique
+discount Int?
+date DateTime?
+}
+model User {
+id String @id @default(uuid())
+firstName String 
+lastName String
+phoneNumber String? @unique
+confirmNumber Boolean?
+location String?
+city String?
+towen String?
+paymentDetails String?
+gender String?
+dateOfBirth String?
+lastSignin DateTime?
+tokenDate DateTime?
+password String?
+email String @unique
+createdAt DateTime @default(now())
+updatedAt DateTime @updatedAt
+orders Order[]
+review Review[]
+comments CommentUser[]
+tokens Session[]
+}
+
+model Admin {
+id String @id @default(uuid())
+email String? @unique
+role String 
+tokenDate DateTime?
+sessions AdminSession[]
+createdAt DateTime @default(now())
+updatedAt DateTime @updatedAt
+}
+model AdminSession {
+id String @id @default(uuid())
+adminId String
+tokenDate DateTime?
+admin Admin @relation(fields: [adminId], references: [id])
+
+}
+model Notification {
+id String @id @default(uuid())
+note String
+
+}
+model Category {
+  id Int @id @default(autoincrement())
+  title String 
+  title2 String?
+  products ProductCategory[]
+}
+
+model Product {
+  id Int @id @default(autoincrement())
+  categories ProductCategory[]
+  price Int
+  size String
+  description String?
+  description2 String?
+  keyWord String?
+  keyWord2 String?
+  images String?
+  reviews  Review[] 
+  comments CommentUser[]
+  Purchases OrderItem[]
+
+}
+
+model Review {
+  id Int @id @default(autoincrement())
+  val Int?
+  productId Int
+  userID String
+  product Product @relation(fields: [productId], references: [id],onDelete:Cascade) 
+  customer User @relation(fields: [userID], references: [id])
+  createdAt DateTime @default(now())
+}
+
+// for break relation between product & Category
+model ProductCategory {
+  product Product @relation(fields: [productId], references: [id],onDelete:Cascade)
+  categoryId Int
+  productId Int
+  category Category @relation(fields: [categoryId], references: [id],onDelete:Cascade)
+
+  @@id([productId, categoryId])
+}
+
+model Comment{
+  id Int @id @default(autoincrement())
+  customer String
+  comment CommentUser[]
+  content String
+}
+model CommentUser{
+  customerId String?
+  commentId Int
+  productId Int
+  comment Comment @relation(fields: [commentId], references: [id],onDelete:Cascade)
+  product Product @relation(fields: [productId], references: [id],onDelete:Cascade)
+  customer User? @relation(fields: [customerId], references: [id])
+
+  @@id([commentId, productId])
+}
+model Order {
+  id String @id @default(uuid())
+  userID String
+  customer User @relation(fields: [userID], references: [id])
+  orderItems OrderItem[]
+  shipment Shipment[]
+  orderDate DateTime @default(now())
+
+}
+
+model OrderItem{
+  orderId String
+  productId Int
+  price Int
+  quentity Int
+  order Order @relation(fields: [orderId], references: [id],onDelete:Cascade)
+  product Product @relation(fields: [productId], references: [id])
+  @@id([orderId, productId])
+}
+
+model Shipment {
+  id String @id @default(uuid())
+  order Order @relation(fields: [orderID], references: [id],onDelete:Cascade)
+  orderID String @unique
+  shipmentDate DateTime @default(now())
+}
+
