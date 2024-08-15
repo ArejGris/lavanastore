@@ -9,6 +9,7 @@ const tokenverify = async (fastify, req, reply) => {
   } catch (error) {
     return reply.send({ status: 403, message: "admin not verfied" });
   }
+  try {
   const data = jwt.decode(token, "secretkeyadmin");
   const createdAt = new Date(data.iat * 1000);
   console.log(data);
@@ -33,6 +34,9 @@ const tokenverify = async (fastify, req, reply) => {
     }
   } else {
     return reply.send({ status: 401, message: "admin not verfied" });
+  }
+  } catch (error){
+    console.log(error)
   }
 };
 module.exports = tokenverify;
