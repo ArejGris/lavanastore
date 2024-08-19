@@ -18,6 +18,7 @@ const tokenverify = require("../handlers/admin/token");
 const refreshtoken = require("../handlers/admin/refreshToken");
 const AddCopon = require("../handlers/admin/addCopon");
 const deleteCategory = require("../handlers/admin/deleteCategory");
+const getUsers = require("../handlers/admin/getUsers");
 
 const adminRoute=(fastify,option,done)=>{
    
@@ -29,6 +30,7 @@ const adminRoute=(fastify,option,done)=>{
       fastify.post('/admin/update-product/:id', productSchema,updateProduct);
       fastify.delete('/admin/delete-product/:id', deleteProduct);
       fastify.get('/admin/get-products',getProducts);
+      fastify.get('/admin/get-users',getUsers)
       fastify.get('/admin/get-product/:id',getProduct);
       fastify.get('/admin/get-categorys',getCategorys);
       fastify.delete('/admin/delete-category/:id',deleteCategory)
